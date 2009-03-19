@@ -34,7 +34,7 @@ loop(Socket) ->
         {udp, Socket, Host, Port, Packet} = Msg ->
 	     << MyTimeStamp:64, MyLogicClock:64, MyBinMsg/binary >> =Packet,
 	    TimeStamp=calendar:gregorian_seconds_to_datetime(MyTimeStamp+86400 *719528),
-	    
+	    file:write_file("log.log",Packet,[append]),
 	    io:format("Got ~p ~p ~p ~p  ~n",[Host, Port,MyBinMsg, TimeStamp]),
             gen_udp:send(Socket, Host, Port, Packet),
             loop(Socket)
