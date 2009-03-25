@@ -11,8 +11,18 @@ class Twister
     @socket.connect(@host, @port)
     t=Time.now.to_i
     msg=[t].pack("Q")
-    mymsg="#{msg.reverse}#{msg.reverse}smurf"
-    @socket.send(mymsg, 0, @host, @port)
+    myclock=[1].pack("Q")
+    myid="a4".to_a.pack("a50")
+    mycomment="comment".to_a.pack("a50")
+    mymsg=[]
+    mymsg << msg.reverse
+    mymsg << myclock.reverse
+    mymsg << myid
+    mymsg << mycomment
+    puts mymsg.inspect
+    puts mymsg.join("").length
+    puts mymsg.join("")
+    @socket.send(mymsg.join(""), 0, @host, @port)
   end
 end
 

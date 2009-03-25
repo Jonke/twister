@@ -41,8 +41,10 @@ void main() {
   SOCKET SendSocket;
   struct sockaddr_in RecvAddr;
   int Port = 4000;
-  char SendBuf[100];
-  int BufLen = 100;
+  char id[50];
+  char comment[50];
+  char SendBuf[200];
+  int BufLen = 200;
   __time64_t now;
   char *p;
   int i;
@@ -62,12 +64,11 @@ void main() {
   // and the specified port number.
   RecvAddr.sin_family = AF_INET;
   RecvAddr.sin_port = htons(Port);
-  RecvAddr.sin_addr.s_addr = inet_addr("192.168.1.100");
+  RecvAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
   //---------------------------------------------
   // Send a datagram to the receiver
   printf("Sending a datagram to the receiver...\n");
-   DBG_ASSERT(0);
   _time64 (&now);
 
   bp=tobytei64(b, now);
@@ -78,15 +79,22 @@ void main() {
   memmove(p,bp,sizeof(b));
   p += sizeof(now);
   memmove(p,bp,sizeof(b));
-    p += sizeof(now);
+  p += sizeof(now);
+  
+  memset(id,0,sizeof(id));
 
-  _snprintf(p,sizeof(SendBuf)-2*sizeof(b), "hej smurf");
-  for(i=0; i < 100;i++)
+  _snprintf(id,sizeof(id)-1, "c4");
+  memmove(p,id,sizeof(id));
+  p += sizeof(id);
+  memset(comment,0,sizeof(comment));
+  _snprintf(comment,sizeof(comment)-1, "comment");
+  memmove(p,comment,sizeof(comment));
+  for(i=0; i < 116;i++)
     printf("%c",SendBuf[i]);
 
   sendto(SendSocket, 
     SendBuf, 
-    25, 
+    116, 
     0, 
     (struct sockaddr *) &RecvAddr, 
     sizeof(RecvAddr));

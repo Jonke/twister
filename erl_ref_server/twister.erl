@@ -31,13 +31,20 @@ twister_server(Port) ->
 
 loop(Socket) ->
     receive
-        {udp, Socket, Host, Port, Packet} = Msg ->
-	     << MyTimeStamp:64, MyLogicClock:64, MyBinMsg/binary >> =Packet,
+        {udp, Socket, Host, Port, Packet}  ->
+	    {Header,Body}=split_binary(Packet,16),
+	    << MyTimeStamp:64, MyLogicClock:64 >> = Header, 
+	    
+	    {MyBinMsg,MyComment}  =split_binary(Body,50),
 	    TimeStamp=calendar:gregorian_seconds_to_datetime(MyTimeStamp+86400 *719528),
-	    file:write_file("log.log",Packet,[append]),
-	    io:format("Got ~p ~p ~p ~p  ~n",[Host, Port,MyBinMsg, TimeStamp]),
-            gen_udp:send(Socket, Host, Port, Packet),
-            loop(Socket)
+	  %%  file:write_file("log.log",Packet,[append]),
+	    io:format("Got ~p ~p ~p ~p ~p ~n",[Host, Port,[X || X <- binary_to_list(MyBinMsg), X =/= 0],[X || X <- binary_to_list(MyComment), X =/= 0], TimeStamp]),
+	    %% gen_udp:send(Socket, Host, Port, Packet),
+	    loop(Socket);
+	%%    void;
+	
+	Other ->
+	    io:format("Other ~p ~n",[Other])
     end.
 
 
