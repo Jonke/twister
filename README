@@ -1,0 +1,9 @@
+The purpose of this little pet project is actually not to create another syslog but to use Processing.
+But since I need some data I might as well use create some way to collect the kind of data I want.
+
+To start with I need just to get a timeline with points when something happend.
+
+Then a map of where something happend.
+
+
+Then we try to connect Processing to some kind of server so that we can monitor ceration apps, ids, or whatever when it happens.
