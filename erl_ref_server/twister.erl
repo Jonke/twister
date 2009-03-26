@@ -32,14 +32,20 @@ twister_server(Port) ->
 loop(Socket) ->
     receive
         {udp, Socket, Host, Port, Packet}  ->
-	    {Header,Body}=split_binary(Packet,16),
-	    << MyTimeStamp:64, MyLogicClock:64 >> = Header, 
+	    io:format("size of packet is ~p ~n",[size(Packet)]),
+	    case size(Packet) of
+		128 ->
+	    {Header,Body}=split_binary(Packet,28),
+	    << MyTimeStamp:64, MyLogicClock:64, AppID:32,FunID:32, SignalID:32 >> = Header, 
 	    
 	    {MyBinMsg,MyComment}  =split_binary(Body,50),
 	    TimeStamp=calendar:gregorian_seconds_to_datetime(MyTimeStamp+86400 *719528),
-	  %%  file:write_file("log.log",Packet,[append]),
-	    io:format("Got ~p ~p ~p ~p ~p ~n",[Host, Port,[X || X <- binary_to_list(MyBinMsg), X =/= 0],[X || X <- binary_to_list(MyComment), X =/= 0], TimeStamp]),
+		    file:write_file("log.log",Packet,[append]),
+	    io:format("Got ~p ~p ~p ~p ~p ~p ~p ~p ~n",[Host, Port,[X || X <- binary_to_list(MyBinMsg), X =/= 0],[X || X <- binary_to_list(MyComment), X =/= 0], TimeStamp, AppID, FunID, SignalID]);
 	    %% gen_udp:send(Socket, Host, Port, Packet),
+		    O ->
+		    io:format("Malformed size of packet is ~p ~n",[O])
+	    end,
 	    loop(Socket);
 	%%    void;
 	

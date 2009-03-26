@@ -43,13 +43,14 @@ void main() {
   int Port = 4000;
   char id[50];
   char comment[50];
-  char SendBuf[200];
-  int BufLen = 200;
+  char SendBuf[128];
+  int BufLen = 128;
   __time64_t now;
   char *p;
   int i;
   byte b[8];
   byte *bp;
+  byte a[4];
   //---------------------------------------------
   // Initialize Winsock
   WSAStartup(MAKEWORD(2,2), &wsaData);
@@ -80,6 +81,19 @@ void main() {
   p += sizeof(now);
   memmove(p,bp,sizeof(b));
   p += sizeof(now);
+
+  bp=tobytei32(a,41);
+  memmove(p,bp,sizeof(a));
+  p += sizeof(a);
+
+  bp=tobytei32(a,42);
+  memmove(p,bp,sizeof(a));
+  p += sizeof(a);
+
+  bp=tobytei32(a,43);
+  memmove(p,bp,sizeof(a));
+  p += sizeof(a);
+
   
   memset(id,0,sizeof(id));
 
@@ -89,12 +103,12 @@ void main() {
   memset(comment,0,sizeof(comment));
   _snprintf(comment,sizeof(comment)-1, "comment");
   memmove(p,comment,sizeof(comment));
-  for(i=0; i < 116;i++)
+  for(i=0; i < 128;i++)
     printf("%c",SendBuf[i]);
 
   sendto(SendSocket, 
     SendBuf, 
-    116, 
+    128, 
     0, 
     (struct sockaddr *) &RecvAddr, 
     sizeof(RecvAddr));

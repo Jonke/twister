@@ -17,6 +17,10 @@ class Twister
     mymsg=[]
     mymsg << msg.reverse
     mymsg << myclock.reverse
+    mymsg << [21].pack("N")
+    mymsg << [22].pack("N")
+    mymsg << [23].pack("N")
+
     mymsg << myid
     mymsg << mycomment
     puts mymsg.inspect

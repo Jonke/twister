@@ -30,7 +30,10 @@ connect0() ->
     MyBinMsg1=list_to_binary(MyMsg),
     MyBinMsg=pad_to(50,MyBinMsg1),
     MyComment=pad_to(50,list_to_binary("cook it")),
-    Mem = << MyTimeStamp:64, MyLogicClock:64, MyBinMsg/binary,MyComment/binary >>,
+    AppID=1,
+    FunID=2,
+    SignalID=0,
+    Mem = << MyTimeStamp:64, MyLogicClock:64,AppID:32,FunID:32, SignalID:32, MyBinMsg/binary,MyComment/binary >>,
     gen_udp:send(Sock,"localhost",4000,Mem),
     void.
 
