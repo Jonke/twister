@@ -18,7 +18,7 @@ println(value);
 long valuec = data.readLong();
 println(valuec);
 int appid = data.readInt();
-println(appid);
+println("appid " + appid);
 int funid = data.readInt();
 println(funid);
 int signalid = data.readInt();
@@ -51,6 +51,8 @@ return tb;
 TwisterBin[] tbs;
 float MaxT=MIN_FLOAT;
 float MinT=MAX_FLOAT;
+float MaxA=MIN_FLOAT;
+float MinA=MAX_FLOAT;
 void setup(){
  size(400,400);
  
@@ -63,9 +65,12 @@ PFont font= loadFont("TrebuchetMS-48.vlw");
 textFont(font);
  tbs= new TwisterBin[0];
  TwisterBin tb=readfromlog(data);
+tbs=(TwisterBin[])append(tbs,tb);
 while(tb.timestamp >0 ){
 MaxT=max(MaxT,(float)tb.timestamp/60);
 MinT=min(MinT,(float)tb.timestamp/60);
+MaxA=max(MaxA,(float)tb.appid);
+MinA=min(MinA,(float)tb.appid);
    tb=readfromlog(data);
 
 if (tb.timestamp > 0)
@@ -75,27 +80,50 @@ Date d = new Date();
  
   println( d.toString()); 
 }
+println(MinA + " " + MaxA);
 
+for(int i=0; i < tbs.length;i++){
+ float r = map((float)tbs[i].timestamp/60, MinT-60,MaxT+60,1.0,200.0);
+ float w= map(tbs[i].appid,MinA,MaxA,20.0,100.0);
+ println(i + " " +r + " " + w);
 }
-
+}
+float closestDist;
+String closestText;
+float closestX;
+float closestY;
 void draw(){
- 
+ background(0);
  //Date d = new Date();
  //d.setTime(1238107900*1000);
  //ill(0);
  //textSize(8);
  //text(d.toString() ,r,r);
- 
+ closestDist=MAX_FLOAT;
 for(int i=0; i < tbs.length;i++){
- float r = map((float)tbs[i].timestamp/60, MinT-60.0,MaxT+60.0,1.0,200.0);
+ float r = map((float)tbs[i].timestamp/60, MinT-60,MaxT+60,10.0,200.0);
+ float w= map(tbs[i].appid,MinA,MaxA,10.0,200.0);
  smooth();
- fill(#A6D785,10);
+ fill(#A6D785,200);
  noStroke();
- //stroke(#A6D785);
- //strokeWeight(5);
- //point(r,10);
-ellipse(r,10,10,10);
-
+//stroke(#A6D785);
+//strokeWeight(5);
+ point(r,w);
+ellipse(r,w,10,10);
+//println(w + " " +r);
+float d= dist(r,w,mouseX,mouseY);
+if (d < closestDist){
+   closestText=tbs[i].comment;
+    closestX=r;
+   closestY=w;
+  closestDist=d; 
 }
- 
 }
+ if (closestDist != MAX_FLOAT)
+ {
+  fill(255);
+  textSize(12);
+  text(closestText, closestX, closestY);
+   // println(closestText);
+ }
+ }
