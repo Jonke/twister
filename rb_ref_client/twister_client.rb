@@ -19,7 +19,7 @@ class Twister
     mymsg << myclock.reverse
     mymsg << [21].pack("N")
     mymsg << [22].pack("N")
-    mymsg << [23].pack("N")
+    mymsg << [100].pack("N")
 
     mymsg << myid
     mymsg << mycomment

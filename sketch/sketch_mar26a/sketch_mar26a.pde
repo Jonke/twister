@@ -103,8 +103,10 @@ void draw(){
 for(int i=0; i < tbs.length;i++){
  float r = map((float)tbs[i].timestamp/60, MinT-60,MaxT+60,10.0,200.0);
  float w= map(tbs[i].appid,MinA,MaxA,10.0,200.0);
+ float percent = norm(tbs[i].signalid,1,244);
+ color between = lerpColor(#A6D785,#FF4422,percent);
  smooth();
- fill(#A6D785,200);
+ fill(between,200);
  noStroke();
 //stroke(#A6D785);
 //strokeWeight(5);
@@ -113,7 +115,10 @@ ellipse(r,w,10,10);
 //println(w + " " +r);
 float d= dist(r,w,mouseX,mouseY);
 if (d < closestDist){
-   closestText=tbs[i].comment;
+  
+  Date da = new Date();
+ da.setTime(tbs[i].timestamp*1000);
+   closestText=tbs[i].id + " " + tbs[i].comment + " " + da;
     closestX=r;
    closestY=w;
   closestDist=d; 
