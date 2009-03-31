@@ -53,8 +53,10 @@ float MaxT=MIN_FLOAT;
 float MinT=MAX_FLOAT;
 float MaxA=MIN_FLOAT;
 float MinA=MAX_FLOAT;
+float MaxL=MIN_FLOAT;
+float MinL=MAX_FLOAT;
 void setup(){
- size(400,400);
+ size(1024,768);
  
  stroke(255);
 background(0);
@@ -71,6 +73,9 @@ MaxT=max(MaxT,(float)tb.timestamp/60);
 MinT=min(MinT,(float)tb.timestamp/60);
 MaxA=max(MaxA,(float)tb.appid);
 MinA=min(MinA,(float)tb.appid);
+
+MaxL=max(MaxL,(float)tb.logicclock);
+MinL=min(MinL,(float)tb.logicclock);
    tb=readfromlog(data);
 
 if (tb.timestamp > 0)
@@ -83,10 +88,13 @@ Date d = new Date();
 println(MinA + " " + MaxA);
 
 for(int i=0; i < tbs.length;i++){
+  
  float r = map((float)tbs[i].timestamp/60, MinT-60,MaxT+60,1.0,200.0);
  float w= map(tbs[i].appid,MinA,MaxA,20.0,100.0);
  println(i + " " +r + " " + w);
 }
+
+frameRate(10);
 }
 float closestDist;
 String closestText;
@@ -101,8 +109,13 @@ void draw(){
  //text(d.toString() ,r,r);
  closestDist=MAX_FLOAT;
 for(int i=0; i < tbs.length;i++){
- float r = map((float)tbs[i].timestamp/60, MinT-60,MaxT+60,10.0,200.0);
- float w= map(tbs[i].appid,MinA,MaxA,10.0,200.0);
+  float r;
+  if (chooselc)
+  r = map(tbs[i].logicclock, MinL,MaxL,10.0,1000.0);
+  else
+ r = map((float)tbs[i].timestamp/60, MinT-60,MaxT+60,10.0,1000.0);
+ 
+ float w= map(tbs[i].appid,MinA,MaxA,10.0,700.0);
  float percent = norm(tbs[i].signalid,1,244);
  color between = lerpColor(#A6D785,#FF4422,percent);
  smooth();
@@ -118,7 +131,7 @@ if (d < closestDist){
   
   Date da = new Date();
  da.setTime(tbs[i].timestamp*1000);
-   closestText=tbs[i].id + " " + tbs[i].comment + " " + da;
+   closestText=tbs[i].id + " " + tbs[i].logicclock+ " " +tbs[i].comment + " " + da;
     closestX=r;
    closestY=w;
   closestDist=d; 
@@ -131,4 +144,11 @@ if (d < closestDist){
   text(closestText, closestX, closestY);
    // println(closestText);
  }
+ }
+ boolean chooselc=false;
+ void keyPressed(){
+  if (key == 'l')
+   chooselc=true;
+  else if (key== 't')
+   chooselc=false; 
  }
