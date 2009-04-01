@@ -135,6 +135,8 @@ else{
 ellipse(r,w,10,10);
 matchs=true;
 }
+
+
 //println(w + " " +r);
 float d= dist(r,w,mouseX,mouseY);
 if (matchs && d < closestDist){
@@ -154,6 +156,30 @@ if (matchs && d < closestDist){
   text(closestText, closestX, closestY);
    // println(closestText);
  }
+
+ stroke(#A6D785);
+strokeWeight(5);
+noFill();
+beginShape();
+for(int i=0; i < tbs.length;i++){
+  float r;
+  if (chooselc)
+  r = map(tbs[i].logicclock, MinL,MaxL,10.0,1000.0);
+  else
+ r = map((float)tbs[i].timestamp/60, MinT-60,MaxT+60,10.0,1000.0);
+ 
+ float w= map(tbs[i].appid,MinA,MaxA,10.0,700.0);
+ 
+
+ if (startsearch && !ids.equals("")){
+   if( tbs[i].id.indexOf(ids) > -1){
+      vertex(r,w);
+    
+   }
+ }
+ 
+}
+endShape();
  }
  boolean chooselc=false;
  boolean startsearch=false;
