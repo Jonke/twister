@@ -56,7 +56,7 @@ float MinA=MAX_FLOAT;
 float MaxL=MIN_FLOAT;
 float MinL=MAX_FLOAT;
 void setup(){
- size(1024,768);
+ size(1024,500);
  
  stroke(255);
 background(0);
@@ -123,11 +123,21 @@ for(int i=0; i < tbs.length;i++){
  noStroke();
 //stroke(#A6D785);
 //strokeWeight(5);
- point(r,w);
+ //point(r,w);
+ boolean matchs=false;
+ if (startsearch){
+   if( tbs[i].id.indexOf(ids) > -1){
+      ellipse(r,w,10,10);
+      matchs=true;
+   }
+ }
+else{
 ellipse(r,w,10,10);
+matchs=true;
+}
 //println(w + " " +r);
 float d= dist(r,w,mouseX,mouseY);
-if (d < closestDist){
+if (matchs && d < closestDist){
   
   Date da = new Date();
  da.setTime(tbs[i].timestamp*1000);
@@ -146,9 +156,33 @@ if (d < closestDist){
  }
  }
  boolean chooselc=false;
+ boolean startsearch=false;
+ String ids="";
+ 
  void keyPressed(){
+   
+   if (key == ENTER || key == RETURN){
+     ids="";
+     startsearch=false;
+ }
+   if (startsearch){
+     if (key == BACKSPACE){
+        int l= ids.length();
+       ids=ids.substring(0,l-1);
+       
+     }
+     else
+     ids = ids +  Character.toString(key);;
+   println(ids); 
+   }
+   
+   if (!startsearch){
   if (key == 'l')
    chooselc=true;
   else if (key== 't')
    chooselc=false; 
+   
+   if (key == 's')
+   startsearch=true;
+   }
  }
