@@ -10,6 +10,14 @@
 #pragma comment(lib, "ws2_32.lib")
 int main(int argc, char *argv[])
 {
-  tw();
-    return 0;
+  __time64_t now;
+  __int64 lc=1;
+  int appid=4;
+  int funid=1;
+  int signalid=100;
+  char * id="c2376";
+  char * comment="lsls";
+  _time64 (&now);
+  tw(now,lc,appid,funid, signalid,id, comment);
+  return 0;
 }

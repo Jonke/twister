@@ -35,14 +35,14 @@ byte* tobytei64(byte *trip ,__int64 i){
 
 
 
-void tw() {
-  
+
+void tw(__int64 timestamp, __int64 logicclock, int appid, int funid, int signalid, char * id, char *comment){
   struct WSAData wsaData;
   SOCKET SendSocket;
   struct sockaddr_in RecvAddr;
   int Port = 4000;
-  char id[50];
-  char comment[50];
+  char mid[50];
+  char mcomment[50];
   char SendBuf[128];
   int BufLen = 128;
   __time64_t now;
@@ -95,14 +95,14 @@ void tw() {
   p += sizeof(a);
 
   
-  memset(id,0,sizeof(id));
+  memset(mid,0,sizeof(mid));
 
-  _snprintf(id,sizeof(id)-1, "c4");
-  memmove(p,id,sizeof(id));
-  p += sizeof(id);
-  memset(comment,0,sizeof(comment));
-  _snprintf(comment,sizeof(comment)-1, "comment");
-  memmove(p,comment,sizeof(comment));
+  _snprintf(mid,sizeof(mid)-1, "c4");
+  memmove(p,mid,sizeof(mid));
+  p += sizeof(mid);
+  memset(mcomment,0,sizeof(mcomment));
+  _snprintf(mcomment,sizeof(mcomment)-1, "comment");
+  memmove(p,mcomment,sizeof(mcomment));
   for(i=0; i < 128;i++)
     printf("%c",SendBuf[i]);
 
