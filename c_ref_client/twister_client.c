@@ -35,7 +35,7 @@ byte* tobytei64(byte *trip ,__int64 i){
 
 
 
-void main() {
+void tw() {
   
   struct WSAData wsaData;
   SOCKET SendSocket;
