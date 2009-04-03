@@ -56,7 +56,7 @@ float MinA=MAX_FLOAT;
 float MaxL=MIN_FLOAT;
 float MinL=MAX_FLOAT;
 void setup(){
- size(1024,500);
+ size(1024,800);
  
  stroke(255);
 background(0);
@@ -85,8 +85,8 @@ Date d = new Date();
  
   println( d.toString()); 
 }
-println(MinA + " " + MaxA);
-
+println("a " +MinA + " " + MaxA);
+println("l " + MinL + " " + MaxL);
 for(int i=0; i < tbs.length;i++){
   
  float r = map((float)tbs[i].timestamp/60, MinT-60,MaxT+60,1.0,200.0);
@@ -211,4 +211,8 @@ endShape();
    if (key == 's')
    startsearch=true;
    }
+ }
+ 
+ void mousePressed(){
+  save("state.png"); 
  }
