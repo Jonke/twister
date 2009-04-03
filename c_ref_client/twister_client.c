@@ -107,38 +107,42 @@ void tw(struct TwisterSocket_tag tws,__int64 timestamp, __int64 logicclock, int 
   //---------------------------------------------
   // Send a datagram to the receiver
   printf("Sending a datagram to the receiver...\n");
-  _time64 (&now);
-
-  bp=tobytei64(b, now);
 
 
-  memset(SendBuf,0,100);
+  bp=tobytei64(b, timestamp);
+
+
+  memset(SendBuf,0,128);
   p=SendBuf;
   memmove(p,bp,sizeof(b));
   p += sizeof(now);
+
+  bp=tobytei64(b, logicclock);
   memmove(p,bp,sizeof(b));
   p += sizeof(now);
 
-  bp=tobytei32(a,41);
+  bp=tobytei32(a,appid);
   memmove(p,bp,sizeof(a));
   p += sizeof(a);
 
-  bp=tobytei32(a,42);
+  bp=tobytei32(a,funid);
   memmove(p,bp,sizeof(a));
   p += sizeof(a);
 
-  bp=tobytei32(a,43);
+  bp=tobytei32(a,signalid);
   memmove(p,bp,sizeof(a));
   p += sizeof(a);
 
   
   memset(mid,0,sizeof(mid));
 
-  _snprintf(mid,sizeof(mid)-1, "c4");
+
+  _snprintf(mid,sizeof(mid)-1, id);
   memmove(p,mid,sizeof(mid));
   p += sizeof(mid);
+
   memset(mcomment,0,sizeof(mcomment));
-  _snprintf(mcomment,sizeof(mcomment)-1, "comment");
+  _snprintf(mcomment,sizeof(mcomment)-1, comment);
   memmove(p,mcomment,sizeof(mcomment));
   for(i=0; i < 128;i++)
     printf("%c",SendBuf[i]);
