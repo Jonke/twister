@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <malloc.h>
 
-
+#include "twister_client.h"
 
 #define DBG_ASSERT(x) if ((x) == 0) __asm { int 3 }
 #pragma comment(lib, "ws2_32.lib")
@@ -34,13 +34,61 @@ byte* tobytei64(byte *trip ,__int64 i){
 
 
 
-
-
-void tw(__int64 timestamp, __int64 logicclock, int appid, int funid, int signalid, char * id, char *comment){
+void tw_pre_W(){
   struct WSAData wsaData;
-  SOCKET SendSocket;
+ //---------------------------------------------
+  // Initialize Winsock
+  WSAStartup(MAKEWORD(2,2), &wsaData);
+
+}
+void tw_post_W(){
+  WSACleanup();
+}
+
+
+struct TwisterSocket_tag tw_pre(){
+ SOCKET SendSocket;
+ struct sockaddr_in RecvAddr;
+ struct TwisterSocket_tag tws;
+ int Port=4000;
+ char *host="127.0.0.1";
+ //---------------------------------------------
+ // Create a socket for sending data
+ SendSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+ 
+ //---------------------------------------------
+ // Set up the RecvAddr structure with the IP address of
+ // the receiver (in this example case "123.456.789.1")
+  // and the specified port number.
+ RecvAddr.sin_family = AF_INET;
+ RecvAddr.sin_port = htons(Port);
+ RecvAddr.sin_addr.s_addr = inet_addr(host);
+ 
+
+ tws.SendSocket=SendSocket;
+ tws.RecvAddr=RecvAddr;
+ return tws;
+}
+
+
+void tw_post(struct TwisterSocket_tag tws){
+
+  //---------------------------------------------
+  // When the application is finished sending, close the socket.
+  printf("Finished sending. Closing socket.\n");
+  closesocket(tws.SendSocket);
+
+  //---------------------------------------------
+  // Clean up and quit.
+  printf("Exiting.\n");
+
+}
+
+void tw(struct TwisterSocket_tag tws,__int64 timestamp, __int64 logicclock, int appid, int funid, int signalid, char * id, char *comment){
+
+  SOCKET  SendSocket;
   struct sockaddr_in RecvAddr;
-  int Port = 4000;
+
   char mid[50];
   char mcomment[50];
   char SendBuf[128];
@@ -51,21 +99,10 @@ void tw(__int64 timestamp, __int64 logicclock, int appid, int funid, int signali
   byte b[8];
   byte *bp;
   byte a[4];
-  //---------------------------------------------
-  // Initialize Winsock
-  WSAStartup(MAKEWORD(2,2), &wsaData);
-
-  //---------------------------------------------
-  // Create a socket for sending data
-  SendSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-
-  //---------------------------------------------
-  // Set up the RecvAddr structure with the IP address of
-  // the receiver (in this example case "123.456.789.1")
-  // and the specified port number.
-  RecvAddr.sin_family = AF_INET;
-  RecvAddr.sin_port = htons(Port);
-  RecvAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+ 
+ 
+  SendSocket =tws.SendSocket;
+  RecvAddr=tws.RecvAddr;
 
   //---------------------------------------------
   // Send a datagram to the receiver
@@ -113,16 +150,9 @@ void tw(__int64 timestamp, __int64 logicclock, int appid, int funid, int signali
     (struct sockaddr *) &RecvAddr, 
     sizeof(RecvAddr));
 
-  Sleep(10000);
-  //---------------------------------------------
-  // When the application is finished sending, close the socket.
-  printf("Finished sending. Closing socket.\n");
-  closesocket(SendSocket);
 
-  //---------------------------------------------
-  // Clean up and quit.
-  printf("Exiting.\n");
-  WSACleanup();
+
+ 
   return;
 }
 

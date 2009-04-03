@@ -17,7 +17,12 @@ int main(int argc, char *argv[])
   int signalid=100;
   char * id="c2376";
   char * comment="lsls";
-  _time64 (&now);
-  tw(now,lc,appid,funid, signalid,id, comment);
+  struct TwisterSocket_tag tws;
+_time64 (&now);
+  tw_pre_W();
+  tws=tw_pre();
+  tw(tws,now,lc,appid,funid, signalid,id, comment);
+  tw_post(tws);
+  tw_post_W();
   return 0;
 }
