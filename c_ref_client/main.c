@@ -11,10 +11,10 @@
 int main(int argc, char *argv[])
 {
   __time64_t now;
-  __int64 lc=1;
-  int appid=4;
+  __int64 lc=50;
+  int appid=10;
   int funid=1;
-  int signalid=100;
+  int signalid=200;
   char * id="c2376";
   char * comment="lsls";
   struct TwisterSocket_tag tws;
